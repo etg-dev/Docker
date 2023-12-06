@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  loki:
+    image: grafana/loki:2.4.0
+    container_name: loki
+    restart: unless-stopped
+    ports:
+      - "3100:3100"
+    volumes:
+      - ./loki:/etc/loki
+      - /tmp/loki/boltdb-shipper-active:/tmp/loki/boltdb-shipper-active
+      - /tmp/loki/boltdb-shipper-cache:/tmp/loki/boltdb-shipper-cache
+      - /tmp/loki/chunks:/tmp/loki/chunks
+      - /tmp/loki/boltdb-shipper-compactor:/tmp/loki/boltdb-shipper-compactor
+      - /tmp/loki/rules:/tmp/loki/rules
+    command: -config.file=/etc/loki/loki-config.yml
+    networks:
+      - primary_network
+      - monitoring
+
+networks:
+  monitoring:
+  primary_network:
+    driver: bridge
